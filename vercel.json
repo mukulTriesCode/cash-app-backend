@@ -1,16 +1,15 @@
 {
     "version": 2,
-    "functions": {
-      "api/server.js": {
-        "runtime": "nodejs18.x",
-        "memory": 1024,
-        "maxDuration": 10
+    "builds": [
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
       }
-    },
+    ],
     "routes": [
       {
         "src": "/api/(.*)",
-        "dest": "/api/server.js"
+        "dest": "/server.js"
       }
     ]
   }
