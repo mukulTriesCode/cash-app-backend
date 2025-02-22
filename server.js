@@ -10,7 +10,14 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+
+//CORS Config
+const corsOptions = {
+  origin: process.env.URL || "*",
+  methods: "GET,POST,PUT,DELETE", // Allowed HTTP methods
+  allowedHeaders: "Content-Type,Authorization", // Allowed headers
+};
+app.use(cors(corsOptions));
 
 // Connect to MongoDB
 connectDB();
