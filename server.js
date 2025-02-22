@@ -15,7 +15,9 @@ app.use(cors());
 // Connect to MongoDB
 connectDB();
 
-// Routes
+app.get('/', (req, res) => {
+    res.json({ message: "Welcome to the API" });
+});
 app.use('/api', authRoutes);
 
 const PORT = process.env.PORT || 5000;
