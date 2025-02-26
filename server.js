@@ -13,7 +13,17 @@ app.use(express.json());
 
 //CORS Config
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
+  const allowedOrigins = [
+    process.env.CORS_ORIGIN || "https://cash-app-react.vercel.app",
+    "http://localhost:5173",
+  ];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else {
+    res.header("Access-Control-Allow-Origin", allowedOrigins[0]); // Default to deployed origin
+  }
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   if (req.method === "OPTIONS") {
