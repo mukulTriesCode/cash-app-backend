@@ -12,7 +12,11 @@ const app = express();
 app.use(express.json());
 
 //CORS Config
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow requests from any origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+}));
 
 // Connect to MongoDB
 connectDB();
