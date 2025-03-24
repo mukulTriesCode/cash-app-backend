@@ -35,6 +35,9 @@ app.use(
   })
 );
 
+// ✅ Handle OPTIONS Preflight Requests
+app.options("*", cors());
+
 // ✅ Routes
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the API" });
@@ -47,7 +50,8 @@ app.use("/api", authRoutes);
 const PORT = process.env.PORT || 5000;
 if (process.env.IS_PRODUCTION !== false) {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
   });
 }
+
 module.exports = app;
