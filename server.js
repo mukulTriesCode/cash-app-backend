@@ -22,7 +22,13 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins, // Allow frontend origins
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    }, // Allow frontend origins
     credentials: true, // Allow cookies & auth headers
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
