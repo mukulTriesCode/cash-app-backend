@@ -18,35 +18,36 @@ app.use(express.json());
 const allowedOrigins = [
   process.env.CORS_ORIGIN || "https://cash-app-react.vercel.app",
   "http://localhost:5173",
+  "http://localhost:3000",
   // Add any additional frontend origins you're using
 ];
 
-// Simplified CORS setup with better debugging
+// Handle OPTIONS preflight requests explicitly
+app.options('*', cors());
+
+// Simplified CORS setup
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // For development or tools like Postman, origin can be undefined
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log(`CORS blocked origin: ${origin}`);
-        // Instead of returning an error (which can cause issues),
-        // we'll allow the request but log it
-        callback(null, true);
-
-        // If you want to strictly enforce CORS, use this instead:
-        // callback(new Error(`Origin ${origin} not allowed by CORS`));
-      }
-    },
+    origin: true, // Allow all origins while debugging
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
+
+// Add additional CORS headers for problematic clients
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 
 // ✅ Routes
 app.get("/", (req, res) => {
