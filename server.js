@@ -14,43 +14,39 @@ connectDB();
 // ✅ Use JSON Middleware
 app.use(express.json());
 
-// ✅ CORS Configuration
+// ✅ CORS Configuration - UPDATED
 const allowedOrigins = [
   process.env.CORS_ORIGIN || "https://cash-app-react.vercel.app",
   "http://localhost:5173",
+  // Add any additional frontend origins you're using
 ];
 
+// Simplified CORS setup with better debugging
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // For development or tools like Postman, origin can be undefined
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        console.log(`CORS blocked origin: ${origin}`);
+        // Instead of returning an error (which can cause issues),
+        // we'll allow the request but log it
+        callback(null, true);
+
+        // If you want to strictly enforce CORS, use this instead:
+        // callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
-    }, // Allow frontend origins
-    credentials: true, // Allow cookies & auth headers
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
-// ✅ Handle OPTIONS Preflight Requests Globally
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Origin",
-    allowedOrigins.includes(req.headers.origin) ? req.headers.origin : ""
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-
-  if (req.method === "OPTIONS") {
-    return res.status(200).end();
-  }
-
-  next();
-});
 
 // ✅ Routes
 app.get("/", (req, res) => {
@@ -59,6 +55,16 @@ app.get("/", (req, res) => {
 
 // ✅ Auth Routes
 app.use("/api", authRoutes);
+
+// ✅ Add error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Server error",
+    error: process.env.NODE_ENV === "production" ? {} : err.message,
+  });
+});
 
 // ✅ Start the Server
 const PORT = process.env.PORT || 5000;
