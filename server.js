@@ -61,6 +61,15 @@ app.use("/api", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/entry", entryRoutes);
 
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Server error",
+    error: process.env.NODE_ENV === "production" ? {} : err.message,
+  });
+});
+
 // Start Server
 const PORT = process.env.PORT || 5000;
 if (process.env.IS_PRODUCTION !== false) {
