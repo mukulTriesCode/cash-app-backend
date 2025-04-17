@@ -1,10 +1,11 @@
 const express = require("express");
 const Entry = require("../models/Entry");
+const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
 
 // Add Entry API
-router.post("/add-entry", async (req, res) => {
+router.post("/add-entry", authMiddleware, async (req, res) => {
   try {
     const { amount, date, notes, category, isCashIn } = req.body;
 
@@ -18,6 +19,7 @@ router.post("/add-entry", async (req, res) => {
       notes,
       category: category || "", // Optional
       isCashIn,
+      user: req.user._id // Add the authenticated user's ID
     });
 
     await newEntry.save();
@@ -30,4 +32,5 @@ router.post("/add-entry", async (req, res) => {
     res.status(500).json({ message: "Something went wrong", error });
   }
 });
+
 module.exports = router;
