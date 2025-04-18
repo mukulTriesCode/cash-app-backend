@@ -23,9 +23,9 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Auth Routes
-app.use("/api", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/entry", entryRoutes);
+app.use("/", authRoutes);
+app.use("/user", userRoutes);
+app.use("/entry", entryRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
