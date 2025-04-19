@@ -17,9 +17,9 @@ router.post("/add-entry", authMiddleware, async (req, res) => {
       amount,
       date,
       notes,
-      category: category || "", // Optional
+      category: category || "",
       isCashIn,
-      user: req.user._id // Add the authenticated user's ID
+      user: req.user._id,
     });
 
     await newEntry.save();
