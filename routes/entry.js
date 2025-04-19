@@ -33,4 +33,31 @@ router.post("/add-entry", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/user", authMiddleware, async (req, res) => {
+  try {
+    const entries = await Entry.find({ user: req.user.id }).sort({
+      createdAt: -1,
+    });
+
+    res.json({
+      success: true,
+      count: entries.length,
+      data: entries.map((entry) => ({
+        entry_id: entry._id,
+        amount: entry.amount,
+        date: entry.date,
+        notes: entry.notes,
+        category: entry.category,
+        isCashIn: entry.isCashIn,
+      })),
+    });
+  } catch (error) {
+    console.error("Error fetching user entries:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error while fetching entries",
+    });
+  }
+});
+
 module.exports = router;
