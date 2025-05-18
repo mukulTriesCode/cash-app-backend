@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 // Docs
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs))
 
 // ✅ Auth Routes
 app.use("/api/", authRoutes);
