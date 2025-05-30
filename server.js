@@ -5,7 +5,8 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/userRoutes");
 const entryRoutes = require("./routes/entry");
-const { specs, swaggerUi } = require('./docs/swagger');
+const categoryRoutes = require("./routes/category");
+const { specs, swaggerUi } = require("./docs/swagger");
 
 dotenv.config();
 
@@ -24,12 +25,13 @@ app.get("/", (req, res) => {
 });
 
 // Docs
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(specs))
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // ✅ Auth Routes
 app.use("/api/", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/entry", entryRoutes);
+app.use("/api/categories", categoryRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
