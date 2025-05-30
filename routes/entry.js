@@ -21,7 +21,7 @@ router.post("/add-entry", authMiddleware, async (req, res) => {
         userId: req.user._id,
       });
       if (!existingCategory) {
-        await Category.create({ name: category.trim(), userId: req.user._id });
+        await Category.create({ name: category.toLowerCase().trim(), userId: req.user._id });
       }
     }
 
