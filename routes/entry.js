@@ -1,5 +1,6 @@
 const express = require("express");
 const Entry = require("../models/Entry");
+const Category = require("../models/Category");
 const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
@@ -11,6 +12,17 @@ router.post("/add-entry", authMiddleware, async (req, res) => {
 
     if (amount == null || !date || isCashIn == null) {
       return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Auto-create category if not exists
+    if (category?.trim()) {
+      let existingCategory = await Category.findOne({
+        name: category.trim(),
+        userId: req.user._id,
+      });
+      if (!existingCategory) {
+        await Category.create({ name: category.trim(), userId: req.user._id });
+      }
     }
 
     const newEntry = new Entry({
