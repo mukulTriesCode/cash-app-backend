@@ -51,9 +51,14 @@ router.get("/user", authMiddleware, async (req, res) => {
       createdAt: -1,
     });
 
+    const totalAmount = entries.reduce((acc, entry) => {
+      return acc + (entry.isCashIn ? entry.amount : -entry.amount);
+    }, 0);
+
     res.json({
       success: true,
       count: entries.length,
+      totalAmount,
       data: entries.map((entry) => ({
         entry_id: entry._id,
         amount: entry.amount,
