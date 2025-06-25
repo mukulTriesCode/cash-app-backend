@@ -161,6 +161,8 @@ module.exports = router;
  *                   type: boolean
  *                 count:
  *                   type: integer
+ *                 totalAmount:
+ *                   type: integer
  *                 data:
  *                   type: array
  *                   items:
